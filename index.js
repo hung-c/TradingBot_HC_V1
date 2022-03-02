@@ -3,11 +3,10 @@ const moment = require('moment');
 
 //Connect to binance
 const binance = new ccxt.binance({
-    apiKey: '',
-    secret: ''
+    apiKey: 'hdQjz5jVs3UfFid6rFwXhc0Rkn0P5XhDlcnpdHmKaFeYgwU95q98QLsP3Hq28aPD',
+    secret: '0PoZqqAFAnw5baZj9QMGFoB0ZL3qZ9OZRIxqKePXugGpsW8dYIHw8JK7y6se23rq'
     // need your apikey and secret key from your binance account to connect to market
 });
-binance = ccxt.binance({ 'options': { 'adjustForTimeDifference': True }})
 binance.setSandboxMode(true); //connect to demo test web
 
 //Print your balance
@@ -16,7 +15,7 @@ async function printBalance() {
     console.log(balance);
 }
 
-/*async function main() {
+async function main() {
     
     //Get Price of BTC
     const price = await binance.fetchOHLCV ('BTC/USDT', '1m',undefined, 5)
@@ -36,6 +35,6 @@ async function printBalance() {
 
 
     console.log(bPrices.map(p => p.close),average5Prices, lastPrice);
-}*/
+}
 
 printBalance()
