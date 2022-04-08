@@ -35,8 +35,8 @@ async function tick() {
              volume: price[5]
          }
      } )
-     //console.log(bPrices);
- 
+
+     console.log(bPrices);
      const averagePrices = bPrices.reduce((acc,price) => acc + price.close, 0)/5 
      const lastPrice =bPrices[bPrices.length-1].close
      console.log(bPrices.map(p => p.close),averagePrices, lastPrice);
