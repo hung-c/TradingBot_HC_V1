@@ -11,6 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "ccxt": "^1.73.82",
-    "moment": "^2.29.1"
+    "dotenv": "^16.0.0",
+    "moment": "^2.29.1",
+    "nodemon": "^2.0.15"
   }
 }

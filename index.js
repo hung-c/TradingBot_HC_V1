@@ -1,10 +1,12 @@
 const ccxt = require('ccxt');
 const moment = require('moment');
+const dotenv = require('dotenv');
+dotenv.config();
 
 //Connect to binance
 const binance = new ccxt.binance({
-    apiKey: 'hdQjz5jVs3UfFid6rFwXhc0Rkn0P5XhDlcnpdHmKaFeYgwU95q98QLsP3Hq28aPD',
-    secret: '0PoZqqAFAnw5baZj9QMGFoB0ZL3qZ9OZRIxqKePXugGpsW8dYIHw8JK7y6se23rq'
+    apiKey: process.env.KEY,
+    secret: process.env.SEC
     // need your apikey and secret key from your binance account to connect to market
 });
 binance.setSandboxMode(true); //connect to demo test web
