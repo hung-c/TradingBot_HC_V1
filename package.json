@@ -1,19 +1,23 @@
 {
-  "name": "TradingBotHC",
+  "name": "tradingbot",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node app.js",
+    "dev": "nodemon app.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@canvasjs/charts": "^3.7.13",
+    "body-parser": "^1.20.2",
     "ccxt": "^1.73.82",
     "delay": "^5.0.0",
-    "dotenv": "^16.0.0",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
     "moment": "^2.29.1",
-    "nodemon": "^2.0.15"
+    "nodemon": "^3.0.1"
   }
 }
