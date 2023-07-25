@@ -22,7 +22,7 @@ class BinanceAPI {
         console.log(`Total USDT: ${(total.BTC-1) * btcPrice + total.USDT}`);
     }
     
-    async getPrices(currency= 'BTC/USDT', numberOfPrices = 1) {
+    async getFullPrices(currency= 'BTC/USDT', numberOfPrices = 1) {
         const price = await this.binance.fetchOHLCV (currency, '1m',undefined, numberOfPrices)
         const bPrices = price.map(price => {
             return {
@@ -34,7 +34,18 @@ class BinanceAPI {
                 volume: price[5]
             }
         });
-        return price;
+        return bPrices;
+    }
+    async getClosedPrices(currency= 'BTC/USD', numberOfPrices = 1) {
+       
+        const price = await this.binance.fetchOHLCV(currency, '1m',undefined, numberOfPrices)
+        const bPrices = price.map(price => {
+            return {
+                timestamp: price[0],
+                volume: price[4]
+            }
+        });
+        return bPrices;
     }
 
     async tick() {
@@ -81,14 +92,14 @@ class BinanceAPI {
 }
 
 module.exports = BinanceAPI
-async function main() {
-    while(true) {
-        Binace1 = new BinanceAPI(process.env.KEY, process.env.SECRET)
-        prices =  await Binace1.getPrices('BTC/USDT', 10);
-        console.log(prices);
-        await delay(60 * 1000);
-    }
-}
+// async function main() {
+//     while(true) {
+//         Binace1 = new BinanceAPI(process.env.KEY, process.env.SECRET)
+//         prices =  await Binace1.getClosedPrices('BTC/USDT', 10);
+//         console.log(prices);
+//         await delay(60 * 1000);
+//     }
+// }
 
 //printBalance()
 //main()

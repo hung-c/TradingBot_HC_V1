@@ -2,70 +2,61 @@
 <html>
 <head>
 <script>
-window.onload = function () {
+window.onload = function() {
 
 var dataPoints = [];
 
 var chart = new CanvasJS.Chart("chartContainer", {
-	animationEnabled: true,
-	theme: "light2", // "light1", "light2", "dark1", "dark2"
-	exportEnabled: true,
+	theme: "light2",
 	title: {
-		text: "Netflix Stock Price in 2016"
-	},
-	subtitles: [{
-		text: "Weekly Averages"
-	}],
-	axisX: {
-		interval: 1,
-		valueFormatString: "MMM"
+		text: "Live Stock Data"
 	},
 	axisY: {
 		prefix: "$",
 		title: "Price"
 	},
-	toolTip: {
-		content: "Date: {x}<br /><strong>Price:</strong><br />Open: {y[0]}, Close: {y[3]}<br />High: {y[1]}, Low: {y[2]}"
-	},
 	data: [{
-		type: "candlestick",
+		type: "spline",
 		yValueFormatString: "$##0.00",
+		xValueType: "dateTime",
 		dataPoints: dataPoints
 	}]
 });
+updateData();
 
-$.get("https://canvasjs.com/data/gallery/javascript/netflix-stock-price.csv", getDataPointsFromCSV);
+// Initial Values
+var xValue = 0;
+var yValue = 10;
+var newDataCount = 6;
 
-function getDataPointsFromCSV(csv) {
-	var csvLines = points = [];
-	csvLines = csv.split(/[\r?\n|\r|\n]+/);
-	for (var i = 0; i < csvLines.length; i++) {
-		if (csvLines[i].length > 0) {
-			points = csvLines[i].split(",");
-			dataPoints.push({
-				x: new Date(
-					parseInt(points[0].split("-")[0]),
-					parseInt(points[0].split("-")[1]),
-					parseInt(points[0].split("-")[2])
-				),
-				y: [
-					parseFloat(points[1]),
-					parseFloat(points[2]),
-					parseFloat(points[3]),
-					parseFloat(points[4])
-				]
-			});
-		}
+function addData(data) {
+	if(newDataCount != 1) {
+		$.each(data, function(key, value) {
+			dataPoints.push({x: value.timestamp, y: parseFloat(value.volume)});
+			
+		});
+	} else {
+		//dataPoints.shift();
+		dataPoints.push({x: data[0][0], y: parseInt(data[0][1])});
+		xValue++;
+		yValue = parseInt(data[0][1]);
 	}
+	
+	newDataCount = 1;
 	chart.render();
+	//setTimeout(updateData, 60*1000);
+}
+
+function updateData() {
+	$.getJSON("http://localhost:3000/prices/10", addData);
 }
 
 }
 </script>
 </head>
-<body>
-<div id="chartContainer" style="height: 370px; width: 100%;"></div>
-<script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
-<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
-</body>
+	<body>
+		<div id="chartContainer" style="height: 370px; width: 100%;"></div>
+		<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+		<script src="https://cdn.canvasjs.com/jquery.canvasjs.min.js"></script>
+	</body>
 </html>

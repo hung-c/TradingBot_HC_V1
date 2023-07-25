@@ -25,13 +25,25 @@ const binanceAPI = new BinanceAPI(apiKey, apiSecret);
 //Start server
 app.listen(port, () => console.log(`Server started on port ${port}`))
 
+app.get('/', async (req, res) => {
+  try {
+    const currency = req.query.currency || 'BTC/USD';
+    const numberOfPrices = parseInt(req.query.numberOfPrices) || 1;
+
+    const prices = await binanceAPI.getClosedPrices(currency, numberOfPrices);
+    res.json(prices);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'An error occurred while fetching the prices.' });
+  }
+});
+
 // Route to get the latest prices in JSON format
-app.get('/prices', async (req, res) => {
+app.get('/prices/:numPrices', async (req, res) => {
     try {
-      const currency = req.query.currency || 'BTC/USDT';
-      const numberOfPrices = parseInt(req.query.numberOfPrices) || 1;
-  
-      const prices = await binanceAPI.getPrices(currency, numberOfPrices);
+      const currency = 'BTC/USDT'
+      const numberOfPrices = req.params.numPrices
+      const prices = await binanceAPI.getClosedPrices(currency, numberOfPrices);
       res.json(prices);
     } catch (err) {
       console.error(err);
