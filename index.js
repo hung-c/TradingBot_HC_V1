@@ -6,24 +6,35 @@ const dotenv = require('dotenv').config();
 class BinanceAPI {
     constructor(key, secret)
     {
+        this.key = key;
+        this.secret = secret;
+        this.connectBinance(key, secret)
+    }
+    
+    connectBinance(key, secret)
+    {
         this.binance = new ccxt.binance({
             // Need your apikey and secret key from your binance account to connect to market
             apiKey: key,
             secret: secret
             
         });
+        if (this.binance.certified)
+        {
+            console.log("Good Connect!!!")
+        }
         this.binance.setSandboxMode(true); //connect to demo test web
+        return this.binance
     }
 
     async printBalance(btcPrice){
         const balance = await this.binance.fetchBalance(); 
         const total = balance.total
-        console.log(`Balance: BTC ${total.BTC}, USDT: ${total.USDT}`);
-        console.log(`Total USDT: ${(total.BTC-1) * btcPrice + total.USDT}`);
+        return total
     }
     
-    async getFullPrices(currency= 'BTC/USDT', numberOfPrices = 1) {
-        const price = await this.binance.fetchOHLCV (currency, '1m',undefined, numberOfPrices)
+    async getFullPrices(currency= 'BTC/USDT', numberOfPrices = 1, since = undefined) {
+        const price = await this.binance.fetchOHLCV (currency, '30s', since, numberOfPrices)
         const bPrices = price.map(price => {
             return {
                 timestamp: moment(price[0]).toLocaleString(),
@@ -36,16 +47,25 @@ class BinanceAPI {
         });
         return bPrices;
     }
-    async getClosedPrices(currency= 'BTC/USD', numberOfPrices = 1) {
-       
-        const price = await this.binance.fetchOHLCV(currency, '1m',undefined, numberOfPrices)
-        const bPrices = price.map(price => {
-            return {
-                timestamp: price[0],
-                volume: price[4]
+    async getClosedPrices(currency, numberOfPrices, since) {
+        const maxRetries = 3;
+        let retryCount = 0;
+        while (retryCount < maxRetries) {
+            try {
+                const price = await this.binance.fetchOHLCV(currency, '1m', since, numberOfPrices);
+                const bPrices = price.map(price => {
+                    return {
+                        timestamp: price[0],
+                        close: price[4]
+                    };
+                });
+                return bPrices;
+            } catch (error) {
+                console.error(`Attempt ${retryCount + 1} failed with error:`, error);
+                this.connectBinance(this.key, this.secret)
+                retryCount++;
             }
-        });
-        return bPrices;
+        }
     }
 
     async tick() {
