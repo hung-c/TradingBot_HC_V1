@@ -111,7 +111,7 @@ class BinanceAPI {
    }
 }
 
-module.exports = BinanceAPI
+module.exports = BinanceAPI;
 // async function main() {
 //     while(true) {
 //         Binace1 = new BinanceAPI(process.env.KEY, process.env.SECRET)
