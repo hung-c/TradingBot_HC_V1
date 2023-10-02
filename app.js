@@ -17,7 +17,7 @@ const port = 3000;
 
 // Replace these with your actual Binance API key and secret
 const apiKey = process.env.KEY;
-const apiSecret = process.env.SECRET;
+const apiSecret = process.env.SEC;
 
 const binanceAPI = new BinanceAPI(apiKey, apiSecret);
 
@@ -27,6 +27,7 @@ app.listen(port, () => console.log(`Server started on port ${port}`))
 router.get("/", (req, res) => 
 {
   res.sendFile(__dirname + "/public/index.html");
+  console.log("MainPage");
 });
 
 // Route to get the latest prices in JSON format

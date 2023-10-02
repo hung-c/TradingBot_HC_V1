@@ -5,8 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "node app.js",
-    "dev": "nodemon app.js",
-    "readJson": "nodemon JsonFileHanlder.js"
+    "dev": "nodemon index.js",
+    "json": "node JsonFileHandler.js"
   },
   "keywords": [],
   "author": "",

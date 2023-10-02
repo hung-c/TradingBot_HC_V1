@@ -3,63 +3,75 @@
 	<head>
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 		<link rel="stylesheet" href="/public/styles.css">
+		<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+		<script src="https://cdn.canvasjs.com/jquery.canvasjs.min.js"></script>
 		<script>
+
 			window.onload = function() {
-
-				var dataPoints = [];
-				var lastPriceTime;
-				var numPrices = 10;
-
-				var chart = new CanvasJS.Chart("chartContainer", {
-					theme: "light2",
-					animationEnabled: true,
-					zoomEnabled: true,
-					title: {
-						text: "Live Stock Data"
-					},
-					axisY: {
-						prefix: "$",
-						title: "Price"
-					},
-					data: [{
-						type: "line",
-						yValueFormatString: "$##0.00",
-						xValueType: "dateTime",
-						dataPoints: dataPoints
-					}]
-				});
+				if(document.readyState == 'complete') {
+					var dataPoints = [];
+					var lastPriceTime;
+					var numPrices = 10;
+					var chart = new CanvasJS.Chart("chartContainer", {
+						theme: "light2",
+						animationEnabled: true,
+						zoomEnabled: true,
+						title: {
+							text: "Live Stock Data"
+						},
+						axisY: {
+							prefix: "$",
+							title: "Price"
+						},
+						data: [{
+							type: "line",
+							yValueFormatString: "$##0.00",
+							xValueType: "dateTime",
+							dataPoints: dataPoints
+						}]
+					});
+					chart.render();
+				}
 				updateData();
+				//document.getElementById("button").addEventListener("click", updateData)
+				function updateData() 
+				{
+					console.log(numPrices);
+					if (lastPriceTime)
+						$.getJSON("http://localhost:3000/prices/" + numPrices + "/since/"+ lastPriceTime +"/currency/", addData)
+						.fail(function(jqXHR, textStatus, errorThrown) {
+							console.error("Error: " + textStatus + " - " + errorThrown);
+						});
+					else
+						$.getJSON("http://localhost:3000/prices/" + numPrices + "/since/currency/", addData)
+						.fail(function(jqXHR, textStatus, errorThrown) {
+							console.error("Error: " + textStatus + " - " + errorThrown);
+						});
+				}
 
-				function addData(data) {
+				function addData(data) 
+				{
+					console.log(data);
 					if(numPrices != 2) {
 						$.each(data, function(key, value) {
-							dataPoints.push({x: value.timestamp, y: parseFloat(value.close)});
+							chart.data[0].addTo("dataPoints",{x: value.timestamp, y: parseFloat(value.close)});
 							lastPriceTime = value.timestamp;
 						});
 					} else {
-						//dataPoints.shift();
 						if (data.length > 1)
 						{
 							if (data[1].timestamp != lastPriceTime)
 							{
-								dataPoints.push({x: data[1].timestamp, y: parseFloat(data[1].close)});
+								chart.data[0].addTo("dataPoints",{x: data[1].timestamp, y: parseFloat(data[1].close)});
 								lastPriceTime = data[1].timestamp;
 							}						
 						}
 					}
 					numPrices = 2;
-					chart.render();
+					//chart.render();
 					setInterval(updateData, 20*1000);
 				}
-
-				function updateData() {
-					console.log(numPrices);
-					if (lastPriceTime)
-						$.getJSON("http://localhost:3000/prices/" + numPrices + "/since/"+ lastPriceTime +"/currency/", addData);
-					else
-						$.getJSON("http://localhost:3000/prices/" + numPrices + "/since/currency/", addData);
-				}
-			}
+			}		
 		</script>
 	</head>
 
@@ -85,7 +97,7 @@
 							<label for="secret1" class="form-label">Secret</label>
 							<input type="text" class="form-control" id="secret1">
 						</div>
-						<button type="submit" class="btn btn-primary mb-2">Submit</button>
+						<button id="button" class="btn btn-primary mb-2">Start</button>
 					</form>
 				</div>
 			</div>
@@ -97,9 +109,6 @@
 				</div>
 			</div>
 		</div>
-		
-		<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
-		<script src="https://cdn.canvasjs.com/jquery.canvasjs.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 	</body>
 </html>

@@ -68,10 +68,10 @@ class BinanceAPI {
         }
     }
 
-    async tick() {
-
+    async tick() 
+    {
         //Get Price of BTC
-        console.log(' ');
+        console.log('');
         const price = await this.binance.fetchOHLCV ('BTC/USDT', '1m',undefined, 5)
         const bPrices = price.map(price => {
             return {
@@ -90,7 +90,7 @@ class BinanceAPI {
         console.log(bPrices.map(p => p.close),averagePrices, lastPrice);
         console.log(`Average price: ${averagePrices}. Last Price: ${lastPrice}`);
    
-        //Algorithm to make decision 
+        //Algorithm to make decision
         let direction = ''
         if (lastPrice > averagePrices)
         {
@@ -108,10 +108,12 @@ class BinanceAPI {
         console.log(`${moment().toLocaleString()}: ${direction} ${quantity} BTC at ${lastPrice}`)
         //console.log(order);
         this.printBalance(lastPrice);
-   }
+    }
 }
 
 module.exports = BinanceAPI;
+
+
 // async function main() {
 //     while(true) {
 //         Binace1 = new BinanceAPI(process.env.KEY, process.env.SECRET)
@@ -121,5 +123,5 @@ module.exports = BinanceAPI;
 //     }
 // }
 
-//printBalance()
-//main()
+// //printBalance()
+// main()
