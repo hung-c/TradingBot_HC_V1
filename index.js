@@ -123,5 +123,5 @@ module.exports = BinanceAPI;
 //     }
 // }
 
-// //printBalance()
+// printBalance()
 // main()
